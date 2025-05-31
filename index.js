@@ -10,7 +10,7 @@ const client = new MongoClient(uri);
 let db;
 
 app.get('/', (req, res) => {
-  res.send('Hello World!');
+  res.send('Hello CI!');
 });
 
 app.get('/items', async (req, res) => {
