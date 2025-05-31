@@ -1,33 +1,26 @@
 const express = require('express');
-const { MongoClient } = require('mongodb');
-
 const app = express();
+
 app.use(express.json());
 
-const uri = 'mongodb://localhost:27017';  // локальная MongoDB, для GitHub Actions будет отдельный сервис
-const client = new MongoClient(uri);
+const items = []; // временное хранилище
 
-let db;
-
-app.get('/', (req, res) => {
-  res.send('Hello CI!');
-});
-
-app.get('/items', async (req, res) => {
-  const items = await db.collection('items').find().toArray();
+app.get('/items', (req, res) => {
   res.json(items);
 });
 
-app.post('/items', async (req, res) => {
+app.post('/items', (req, res) => {
   const item = req.body;
-  const result = await db.collection('items').insertOne(item);
-  res.json(result);
+  items.push(item);
+  res.status(201).json(item);
 });
 
-async function start() {
-  await client.connect();
-  db = client.db('testdb');
-  app.listen(3000, () => console.log('Server started on port 3000'));
+// Если файл запускается напрямую — запускаем сервер
+if (require.main === module) {
+  app.listen(3000, () => {
+    console.log('Server started on port 3000');
+  });
 }
 
-start().catch(console.error);
+// Экспортируем app для тестов
+module.exports = app;
