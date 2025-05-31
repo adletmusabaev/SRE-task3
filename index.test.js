@@ -1,20 +1,15 @@
+// index.test.js
 const request = require('supertest');
 const app = require('./app');
-const { MongoClient } = require('mongodb');
 
 let server;
-let db;
 
-beforeAll(async () => {
-  const client = new MongoClient('mongodb://localhost:27017');
-  await client.connect();
-  db = client.db('testdb');
-
-  server = app.listen(3001);
+beforeAll(done => {
+  server = app.listen(3001, done);
 });
 
-afterAll(() => {
-  server.close();
+afterAll(done => {
+  server.close(done);
 });
 
 test('GET /items returns empty array initially', async () => {
