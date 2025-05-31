@@ -1,5 +1,5 @@
 const request = require('supertest');
-const app = require('./index'); // подключаем express-приложение
+const app = require('./app');
 const { MongoClient } = require('mongodb');
 
 let server;
@@ -10,7 +10,6 @@ beforeAll(async () => {
   await client.connect();
   db = client.db('testdb');
 
-  // Запускаем сервер на другом порту (для CI и тестов)
   server = app.listen(3001);
 });
 
@@ -19,7 +18,7 @@ afterAll(() => {
 });
 
 test('GET /items returns empty array initially', async () => {
-  const res = await request(app).get('/items');
+  const res = await request(server).get('/items');
   expect(res.statusCode).toBe(200);
   expect(res.body).toEqual([]);
 });
