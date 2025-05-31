@@ -1,26 +1,18 @@
-const express = require('express');
-const app = express();
+const request = require('supertest');
+const app = require('./index');
 
-app.use(express.json());
+let server;
 
-const items = []; // временное хранилище
-
-app.get('/items', (req, res) => {
-  res.json(items);
+beforeAll(() => {
+  server = app.listen(3001);
 });
 
-app.post('/items', (req, res) => {
-  const item = req.body;
-  items.push(item);
-  res.status(201).json(item);
+afterAll(() => {
+  server.close();
 });
 
-// Если файл запускается напрямую — запускаем сервер
-if (require.main === module) {
-  app.listen(3000, () => {
-    console.log('Server started on port 3000');
-  });
-}
-
-// Экспортируем app для тестов
-module.exports = app;
+test('GET /items returns empty array initially', async () => {
+  const res = await request(app).get('/items');
+  expect(res.statusCode).toBe(200);
+  expect(res.body).toEqual([]);
+});
