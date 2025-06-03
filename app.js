@@ -7,7 +7,7 @@ app.use(express.json());
 let items = [];
 
 app.get('/', (req, res) => {
-  res.send('Hello World'); // новый маршрут
+  res.send('Hello CI'); 
 });
 
 app.get('/items', (req, res) => {
